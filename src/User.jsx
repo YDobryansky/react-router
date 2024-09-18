@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -7,10 +6,15 @@ const User = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    axios
-      .get(`https://api.github.com/users/${userId}`)
+    fetch(`https://api.github.com/users/${userId}`)
       .then(response => {
-        setUser(response.data);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setUser(data);
       })
       .catch(error => {
         console.error('Error fetching user data:', error);
